@@ -4,8 +4,6 @@ jobs:
   qa:
     name: Check tests
     runs-on: ubuntu-20.04
-    permissions:
-      contents: write
     steps:
       - name: Checkout on master
         uses: actions/checkout@v3
@@ -27,6 +25,12 @@ jobs:
       - name: Run flake8
         uses: py-actions/flake8@v2
 
+  create_commit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    needs: ["qa"]
+    steps:
       - name: Push a file to our repository
         run: |
           pwd
@@ -36,8 +40,8 @@ jobs:
           git config --global user.email "my-bot@bot.com"
           git config --global user.name "my-bot"
           git fetch
-          git checkout master
-          git branch --set-upstream-to=origin/master
+          git checkout main
+          git branch --set-upstream-to=origin/main
           git pull
           pytest >> log_pytest.txt
           ls -a
